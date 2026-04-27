@@ -1,0 +1,72 @@
+import streamlit as st
+import requests
+import json
+import os
+from PIL import Image
+from datetime import datetime
+
+# --- CONFIGURAÇÕES CENTRAL RWV ---
+TOKEN = "8701835517:AAGRW8f-hZET6BA20kLSwn6zLShvhxqCq0k"
+CHAT_ID = 7882559358 # Coloque seu ID do Telegram aqui
+
+def salvar_historico(dados):
+    with open("historico_rwv.csv", "a", encoding="utf-8") as f:
+        f.write(f"{dados['data']};{dados['cliente']};{dados['km']}km;R${dados['total']:.2f}\n")
+
+# --- INTERFACE VISUAL (TRANSPARÊNCIA) ---
+st.set_page_config(page_title="RWVlog - Logística de Precisão", page_icon="🚚")
+
+# Estilo Black & Gold
+st.markdown("""
+    <style>
+    .main { background-color: #0e1117; color: white; }
+    .stButton>button { background-color: #d4af37; color: black; font-weight: bold; border-radius: 5px; }
+    h3 { color: #d4af37; text-align: center; }
+    </style>
+    """, unsafe_allow_html=True)
+
+# Exibição do Banner que você salvou com tanto esforço!
+try:
+    img_path = "assets/rwv_logo.png"
+    if os.path.exists(img_path):
+        st.image(Image.open(img_path), use_container_width=True)
+    else:
+        st.markdown("### 🏆 RWVLOG - LOGÍSTICA DE PRECISÃO")
+except:
+    st.markdown("### 🏆 RWVLOG - LOGÍSTICA DE PRECISÃO")
+
+st.markdown("---")
+st.markdown("### 📊 Simulador de Frete Transparente")
+
+with st.form("orcamento"):
+    nome = st.text_input("Seu Nome ou Empresa")
+    whatsapp = st.text_input("Seu WhatsApp (com DDD)")
+    origem = st.text_input("Ponto de Coleta (Rua/Bairro)")
+    destino = st.text_input("Ponto de Entrega (Rua/Bairro)")
+    km = st.number_input("Distância Prevista (KM)", min_value=0.5, step=0.1)
+
+    # Lógica de Preço RWV
+    base = 2.0 if km <= 10 else 5.0
+    total = base + (km * 1.20)
+
+    st.info(f"💡 Cálculo Transparente: Taxa R${base:.2f} + (KM {km} x R$1,20)")
+    st.markdown(f"## *Total Estimado: R$ {total:.2f}*")
+    
+    enviar = st.form_submit_button("SOLICITAR LOGÍSTICA")
+
+if enviar:
+    if nome and whatsapp and origem and destino:
+        agora = datetime.now().strftime("%d/%m/%Y %H:%M")
+        
+        # Salva no "Livro de Caixa" da Holding
+        dados_corrida = {"data": agora, "cliente": nome, "km": km, "total": total}
+        salvar_historico(dados_corrida)
+        
+        # Mensagem para o seu Telegram
+        texto = (
+            f"🚀 NOVA SOLICITAÇÃO RWVLOG\n"
+            f"---------------------------\n"
+            f"👤 Cliente: {nome}\n"
+            f"📱 WhatsApp: {whatsapp}\n"
+            f"📍 De: {origem}\n"
+            f"O
