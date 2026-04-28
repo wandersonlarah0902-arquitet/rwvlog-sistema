@@ -9,8 +9,8 @@ PRECOS = {
     "Fiorino 🚚": {"base_curta": 10.0, "base_longa": 20.0, "km": 2.50}
 }
 
-TOKEN = "8701835517:AAGRW8f-hZET6BA20kLSwn6zLShvhxqCq0k"
-CHAT_ID = "7882559358" # COLOQUE SEU ID AQUI
+TOKEN = st.secrets "8701835517:AAGRW8f-hZET6BA20kLSwn6zLShvhxqCq0k"
+CHAT_ID = st.secrets "7882559358" # COLOQUE SEU ID AQUI
 
 st.set_page_config(page_title="RWVlog - Portal de Logística", layout="centered")
 
