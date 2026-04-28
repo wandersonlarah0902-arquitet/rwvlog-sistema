@@ -9,8 +9,8 @@ PRECOS = {
     "Fiorino 🚚": {"base_curta": 10.0, "base_longa": 20.0, "km": 2.50}
 }
 
-TOKEN = st.secrets "8701835517:AAGRW8f-hZET6BA20kLSwn6zLShvhxqCq0k"
-CHAT_ID = st.secrets "7882559358" # COLOQUE SEU ID AQUI
+TOKEN = st.secrets["TELEGRAM_TOKEN"]
+CHAT_ID = st.secrets["CHAT_ID"]
 
 st.set_page_config(page_title="RWVlog - Portal de Logística", layout="centered")
 
@@ -75,6 +75,6 @@ if st.button("🚀 SOLICITAR LOGÍSTICA AGORA"):
         requests.post(f"https://api.telegram.org/bot{TOKEN}/sendMessage", 
                       json={"chat_id": CHAT_ID, "text": texto, "parse_mode": "Markdown"})
         
-        st.success("✅ Pedido enviado! Aguarde o contato do nosso Arquiteto.")
+        st.success("✅ Pedido enviado! Aguarde o contato do nossoColaborador.")
     else:
         st.error("Preencha todos os campos e simule a distância.") 
