@@ -1,3 +1,4 @@
+import urllib.parse
 import streamlit as st
 import requests
 import os
@@ -77,17 +78,62 @@ if st.button("📊 SIMULAR VALOR DO FRETE"):
 
 st.markdown("---")
 
-# --- 5. DISPARO CENTRALIZADO (TELEGRAM) ---
+# --- 5. DISPARO CENTRALIZADO (MENSAGEM CONFIGURADA) ---
 if st.button("🚀 CONFIRMAR E SOLICITAR AGORA"):
     if nome and whatsapp and origem and destino and distancia > 0:
-        # Mensagem formatada para você copiar e enviar ao cliente
+        
+        # O TEXTO QUE VOCÊ PEDIU, FORMATADO PARA O CLIENTE
+        link_grupo = st.secrets["LINK_GRUPO"]
+        
         msg_cliente = (
-            f"Olá {nome}, confirmamos sua solicitação via portal RWVLOG!\n\n"
-            f"📍 Rota: {origem} ➔ {destino}\n"
+            f"📦 RWVLOG - CONFIRMAÇÃO DE PEDIDO\n\n"
+            f"Olá, {nome}! Sua solicitação foi recebida.\n"
             f"💰 Valor: {valor_formatado}\n\n"
-            f"Acompanhe o deslocamento do colaborador aqui:\n"
-            f"{LINK_RASTREIO}"
+            f"Para acompanhar o deslocamento e ter suporte em tempo real, entre no nosso grupo oficial:\n"
+            f"🔗 {link_grupo}\n\n"
+            f"Obrigado por confiar na RWVLOG!"
         )
+        
+        # Prepara o link direto para abrir no seu WhatsApp com a mensagem pronta
+        texto_url = urllib.parse.quote(msg_cliente)
+        link_direto_whatsapp = f"https://wa.me/55{whatsapp}?text={texto_url}"
+        
+        # Mensagem que vai para o seu Telegram para controle interno
+        texto_telegram = (
+            f"🔔 *NOVO PEDIDO CONFIRMADO*\n"
+            f"👤 Cliente: {nome}\n"
+            f"📍 {origem} ➔ {destino}\n"
+            f"💰 Valor: {valor_formatado}\n\n"
+            f"✅ [ABRIR WHATSAPP E ENVIAR MENSAGEM]({link_direto_whatsapp})"
+        )
+        
+        try:
+            requests.post(f"https://api.telegram.org/bot{TOKEN}/sendMessage", 
+                          json={"chat_id": CHAT_ID, "text": texto_telegram, "parse_mode": "Markdown"})
+            
+            st.success("✅ Solicitação enviada com sucesso!")
+            
+            # Botão grande no site para você clicar e já enviar a mensagem
+            st.link_button("📲 CLIQUE AQUI PARA ENVIAR MENSAGEM AO CLIENTE", link_direto_whatsapp)
+            
+            st.markdown("---")
+            st.info("💡 *Dica:* Ao clicar no botão acima, o WhatsApp abrirá com o link do grupo já digitado para o cliente.")
+            st.balloons()
+            
+        except Exception as e:
+            st.error(f"Erro ao processar: {e}")
+        
+        try:
+            requests.post(f"https://api.telegram.org/bot{TOKEN}/sendMessage", 
+                          json={"chat_id": CHAT_ID, "text": texto_telegram, "parse_mode": "Markdown"})
+            
+            # Mostra na tela do site também para garantir
+            st.success("✅ Solicitação enviada!")
+            st.markdown("### 📱 Copie a mensagem abaixo para o cliente:")
+            st.code(msg_cliente) # Isso cria um campo fácil de copiar no site
+            st.balloons()
+        except Exception as e:
+            st.error(f"Erro ao conectar com a central: {e}")
         
         # Texto otimizado para o seu Telegram
         texto_telegram = (
