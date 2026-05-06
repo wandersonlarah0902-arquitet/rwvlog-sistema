@@ -83,7 +83,7 @@ if st.button("🚀 CONFIRMAR E SOLICITAR AGORA"):
     if nome and whatsapp and origem and destino and distancia > 0:
         
         # O TEXTO QUE VOCÊ PEDIU, FORMATADO PARA O CLIENTE
-        link_grupo = st.secrets["LINK_GRUPO"]
+        link_grupo = st.secrets["LINK_RASTREIO"]
         
         msg_cliente = (
             f"📦 RWVLOG - CONFIRMAÇÃO DE PEDIDO\n\n"
