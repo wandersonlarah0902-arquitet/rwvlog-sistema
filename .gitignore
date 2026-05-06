@@ -1,0 +1,14 @@
+# Ignorar segredos e configurações locais
+.streamlit/
+secrets.toml
+
+# Ignorar arquivos temporários do Python
+_pycache_/
+*.pyc
+
+# Ignorar arquivos de ambiente virtual (se você usar)
+venv/
+.env
+
+# Ignorar arquivos do sistema
+.DS_Store
